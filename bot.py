@@ -17,8 +17,15 @@ ans=""
 response=""
 origQuote=""
 
+global name_alias
+name_alias = {"orange": ["nivy"], "iandur": ["lance", "lander"], "laptop monkey": ["kyo", "desktop monkey"], "emily w": ["emily", "goose"],
+"blossom": ["naaz"], "onion": ["onion", "ritvik", "aipiox"], "jc": ["jerry"], "absurdism": ["krish"], "redvilder": ["nick"],"doomgooey": ["sergey", "doom"], "jonjonnho": ["jonathan"], "みお" : ["mio"],
+"luciars": ["shiba", "lucas"], "garboguy": ["liam", "garbo" ,"mailman"], "dripbot": ["bolt"], "the-call-of-the-void": ["jessica", "obomo"], "voidlord": ["chonky","chonky birb", "StarLight "], "givemewater": ["water"], "kay911kay": ["broke&homeless", "broke", "daniel"], "salazareo": ["daniel", "salazar"], 
+"riddle": ["kana"], "theraghavsharma": ["raghav", "kyo's butler"], "winghawk": ["georges"], "cluelessKimchi一IlirFan": ["kimchi", "kim"], "lukasz345": ["lukasz"], "starlight": ["chonky","chonky birb", "voidlord"]
+}
+
 def randquote():
-    with open('testFile.txt', encoding="utf8") as f:
+    with open('quotes.txt', encoding="utf8") as f:
         lines=f.readlines()
         quote = random.randint(0, len(lines)-1)
         nospeakerWithQuoteNum = lines[quote].split("\" - ")[0]
@@ -53,22 +60,42 @@ async def on_message(message):
         return
     if '-' in message.content:
         response=""
-        if (message.content).lower() == '-guessquote':
+            # List of Commands
+        if (message.content).lower() == '-help':
+            response="**Guess Quote Commands!**\n **-guessquote** -> starts a quote guessing game! (short form -**gq**)\n **-giveup** -> Stops the game and reveals the answer!\n **-[username]** -> guessing that username for the current quote"
+        
+            # Prevents starting a new game if a game is on progress
+        elif ((message.content).lower() == '-guessquote' or (message.content).lower() == '-gq') and getState()[0]: 
+            response="Guess the previous quote! use -giveup to giveup"
+
+            # Starting the Game
+        elif ((message.content).lower() == '-guessquote' or (message.content).lower() == '-gq') and not getState()[0]:
             quote = randquote()
             response = quote[0]
             setState(True,quote[1].strip(),quote[2])
-        elif (message.content).lower() == '-giveup':
+
+            # Giving up
+        elif (message.content).lower() == '-giveup' and getState()[0]:
             response = "Original quote:\n\n" + getState()[2]
             setState(False,"","")
-        elif getState()[0] and ((getState()[1]).lower() in (message.content).lower()):
-            response = "**Correct!** \nOriginal quote:\n\n" + getState()[2] 
+
+            # Giving up when no game is running
+        elif (message.content).lower() == '-giveup' and not getState()[0]:
+            reponse = "There is currently no game running!\nUse -guessquote to start a game!" 
+
+            # Correct Guess
+        elif getState()[0] and ((getState()[1]).lower() in (message.content).lower()) or (getState()[1].lower() in name_alias) and (message.content).lower()[1:] in (name_alias[getState()[1].lower()]):
+            response = "**Correct!** \nOriginal quote:\n\n" + getState()[2]
             setState(False,"","")
+
+            # Wrong Guess
         elif getState()[0]:
-            response = "No. Guess again." 
+            response = "Guess again or type -giveup to giveup." 
         if response != "":
             await message.channel.send(response)
 
 client.run(TOKEN)
+
 
 
 
