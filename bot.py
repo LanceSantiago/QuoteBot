@@ -21,8 +21,9 @@ global name_alias
 name_alias = {"orange": ["nivy"], "iandur": ["lance", "lander"], "laptop monkey": ["kyo", "desktop monkey"], "emily w": ["emily", "goose"],
 "blossom": ["naaz"], "onion": ["onion", "ritvik", "aipiox"], "jc": ["jerry"], "absurdism": ["krish"], "redvilder": ["nick"],"doomgooey": ["sergey", "doom"], "jonjonnho": ["jonathan"], "みお" : ["mio"],
 "luciars": ["shiba", "lucas"], "garboguy": ["liam", "garbo" ,"mailman"], "dripbot": ["bolt"], "the-call-of-the-void": ["jessica", "obomo"], "voidlord": ["chonky","chonky birb", "StarLight "], "givemewater": ["water"], "kay911kay": ["broke&homeless", "broke", "daniel"], "salazareo": ["daniel", "salazar"], 
-"riddle": ["kana"], "theraghavsharma": ["raghav", "kyo's butler"], "winghawk": ["georges","shanker"], "cluelessKimchi一IlirFan": ["kimchi", "kim"], "lukasz345": ["lukasz"], "starlight": ["chonky","chonky birb", "voidlord"],
-"1!":["wan"], "iloveubb":["hans"]
+"riddle": ["kana"], "theraghavsharma": ["raghav", "kyo's butler"], "winghawk": ["georges","shanker"], "lukasz345": ["lukasz"], "starlight": ["chonky","chonky birb", "voidlord"],
+"1!":["wan"], "iloveubb":["hans"], 
+"undefined_kimchi": ["kimchi", "kim"], "cluelessKimchi一IlirFan": ["kimchi", "kim"], "kimchi_bot": ["kimchi", "kim"], "Chonky Rebel BOT Kimchi": ["kimchi", "kim"], "cluelessKimchi-IlirFan": ["kimchi", "kim"]
 }
 
 def randquote():
@@ -61,11 +62,11 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user:
         return
-    if '-' in message.content:
+    if message.content[0] == "-":
         response=""
             # List of Commands
         if (message.content).lower() == '-help':
-            response="**Guess Quote Commands!**\n **-guessquote** -> starts a quote guessing game! (short form -**gq**)\n **-giveup** -> Stops the game and reveals the answer!\n **-[username]** -> guessing that username for the current quote"
+            response="**Guess Quote Commands!**\n **-guessquote** -> starts a quote guessing game! (short form -**gq**)\n **-giveup** -> Stops the game and reveals the answer!\n **-[username]** -> guessing that username for the current quote\n **-quote** -> Repeats the current quote being guessed!"
         
             # Prevents starting a new game if a game is on progress
         elif ((message.content).lower() == '-guessquote' or (message.content).lower() == '-gq') and getState()[0]: 
