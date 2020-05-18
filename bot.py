@@ -18,15 +18,15 @@ response=""
 origQuote=""
 
 def randquote():
-    f=open('quotes.txt')
-    lines=f.readlines()
-    quote = random.randint(0, len(lines)-1)
-    nospeakerWithQuoteNum = lines[quote].split("\" - ")[0]
-    noSpeaker = (re.split(r'\#[0-9]*:', nospeakerWithQuoteNum)[1]) + "\""
-    speakerWithNum = lines[quote].split("\" -")[1] 
-    speaker = speakerWithNum.split("[")[0] 
-    output = [noSpeaker, speaker, lines[quote]]
-    return output
+    with open('testFile.txt', encoding="utf8") as f:
+        lines=f.readlines()
+        quote = random.randint(0, len(lines)-1)
+        nospeakerWithQuoteNum = lines[quote].split("\" - ")[0]
+        noSpeaker = (re.split(r'\#[0-9]*:', nospeakerWithQuoteNum)[1]) + "\""
+        speakerWithNum = lines[quote].split("\" -")[1] 
+        speaker = speakerWithNum.split("[")[0] 
+        output = [noSpeaker, speaker, lines[quote]]
+        return output
 
 def setState(gameState,answerState,originalQuote):
     global game
@@ -51,8 +51,6 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user:
         return
-    print(getState())
-    print(getState()[1])
     if '-' in message.content:
         response=""
         if (message.content).lower() == '-guessquote':
