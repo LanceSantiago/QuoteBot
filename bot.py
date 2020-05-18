@@ -16,12 +16,13 @@ game=False
 ans=""
 response=""
 origQuote=""
-
+namelessQuote=""
 global name_alias
 name_alias = {"orange": ["nivy"], "iandur": ["lance", "lander"], "laptop monkey": ["kyo", "desktop monkey"], "emily w": ["emily", "goose"],
 "blossom": ["naaz"], "onion": ["onion", "ritvik", "aipiox"], "jc": ["jerry"], "absurdism": ["krish"], "redvilder": ["nick"],"doomgooey": ["sergey", "doom"], "jonjonnho": ["jonathan"], "みお" : ["mio"],
 "luciars": ["shiba", "lucas"], "garboguy": ["liam", "garbo" ,"mailman"], "dripbot": ["bolt"], "the-call-of-the-void": ["jessica", "obomo"], "voidlord": ["chonky","chonky birb", "StarLight "], "givemewater": ["water"], "kay911kay": ["broke&homeless", "broke", "daniel"], "salazareo": ["daniel", "salazar"], 
-"riddle": ["kana"], "theraghavsharma": ["raghav", "kyo's butler"], "winghawk": ["georges"], "cluelessKimchi一IlirFan": ["kimchi", "kim"], "lukasz345": ["lukasz"], "starlight": ["chonky","chonky birb", "voidlord"]
+"riddle": ["kana"], "theraghavsharma": ["raghav", "kyo's butler"], "winghawk": ["georges","shanker"], "cluelessKimchi一IlirFan": ["kimchi", "kim"], "lukasz345": ["lukasz"], "starlight": ["chonky","chonky birb", "voidlord"],
+"1!":["wan"], "iloveubb":["hans"]
 }
 
 def randquote():
@@ -35,16 +36,18 @@ def randquote():
         output = [noSpeaker, speaker, lines[quote]]
         return output
 
-def setState(gameState,answerState,originalQuote):
+def setState(gameState,answerState,originalQuote, quote):
     global game
     game=gameState
     global ans
     ans=answerState
     global origQuote
     origQuote=originalQuote
+    global namelessQuote
+    namelessQuote=quote
 
 def getState():
-    return [game, ans, origQuote]
+    return [game, ans, origQuote,namelessQuote]
 
 @client.event
 async def on_ready():
@@ -72,21 +75,23 @@ async def on_message(message):
         elif ((message.content).lower() == '-guessquote' or (message.content).lower() == '-gq') and not getState()[0]:
             quote = randquote()
             response = quote[0]
-            setState(True,quote[1].strip(),quote[2])
-
+            setState(True,quote[1].strip(),quote[2],quote[0])
+            # re-prints the quote
+        elif((message.content).lower() == '-quote') and getState()[0]:
+            response=getState()[3]
             # Giving up
         elif (message.content).lower() == '-giveup' and getState()[0]:
             response = "Original quote:\n\n" + getState()[2]
-            setState(False,"","")
+            setState(False,"","","")
 
             # Giving up when no game is running
-        elif (message.content).lower() == '-giveup' and not getState()[0]:
+        elif ((message.content).lower() == '-giveup' or (message.content).lower() == '-quote') and not getState()[0]:
             reponse = "There is currently no game running!\nUse -guessquote to start a game!" 
 
             # Correct Guess
         elif getState()[0] and ((getState()[1]).lower() in (message.content).lower()) or (getState()[1].lower() in name_alias) and (message.content).lower()[1:] in (name_alias[getState()[1].lower()]):
             response = "**Correct!** \nOriginal quote:\n\n" + getState()[2]
-            setState(False,"","")
+            setState(False,"","","")
 
             # Wrong Guess
         elif getState()[0]:
@@ -95,13 +100,3 @@ async def on_message(message):
             await message.channel.send(response)
 
 client.run(TOKEN)
-
-
-
-
-
-# orange: -guessquote
-# bot: Guess who said this!
-# bot: "Hello"
-# orange: -iandur
-# bot: Correct! Quote: #123: "Hello"  etc
