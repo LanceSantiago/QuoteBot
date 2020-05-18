@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-
+QUOTES_PATH="quotes.txt"
 client = discord.Client()
 
 
@@ -26,7 +26,7 @@ name_alias = {"orange": ["nivy"], "iandur": ["lance", "lander"], "laptop monkey"
 }
 
 def randquote():
-    with open('quotes.txt', encoding="utf8") as f:
+    with open(QUOTES_PATH, encoding="utf8") as f:
         lines=f.readlines()
         quote = random.randint(0, len(lines)-1)
         nospeakerWithQuoteNum = lines[quote].split("\" - ")[0]
